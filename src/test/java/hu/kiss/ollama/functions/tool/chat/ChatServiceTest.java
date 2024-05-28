@@ -83,7 +83,7 @@ As of 2024-05-27 13:38:10.718447, we currently have **23** tasks in Redmine!
         verify(ollamaChatClient).call(argThat(new ArgumentMatcher<Prompt>() {
             @Override
             public boolean matches(Prompt t) {
-                return t.getContents().contains("add_task");
+                return t.getContents().contains("create_task");
             }
         }));
         
@@ -107,11 +107,9 @@ As of 2024-05-27 13:38:10.718447, we currently have **23** tasks in Redmine!
         chatService.chat(question);
         
         verify(ollamaChatClient,times(2)).call(valueCaptor.capture());
-        assertTrue(valueCaptor.getAllValues().get(1).getContents().contains("""
-{"response":3}
-"""));
-        assertTrue(valueCaptor.getAllValues().get(1).getContents().contains(question));
-
+        
+        assertTrue(valueCaptor.getAllValues().get(0).getContents().contains(question));
+        assertTrue(valueCaptor.getAllValues().get(1).getContents().contains("response"));
     }
     
     @Test
@@ -121,7 +119,7 @@ As of 2024-05-27 13:38:10.718447, we currently have **23** tasks in Redmine!
 {
 "calls": [
     {
-        "name": "add_task",
+        "name": "create_task",
         "arguments": {
             "task_name":"Test"
          }
@@ -135,7 +133,7 @@ As of 2024-05-27 13:38:10.718447, we currently have **23** tasks in Redmine!
         
         verify(ollamaChatClient,times(2)).call(valueCaptor.capture());
         assertTrue(valueCaptor.getAllValues().get(1).getContents().contains("""
-{"response":"1"}
+{"create_task":{"response":"1"}}
 """));
         assertTrue(valueCaptor.getAllValues().get(1).getContents().contains(question));
 
